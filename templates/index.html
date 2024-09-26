@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dynamic Page</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+    <button id="run-kmeans">Run KMeans</button>
+    <div id="result"></div>
+
+    <script>
+    $(document).ready(function(){
+        $("#run-kmeans").click(function(){
+            $.get("/run_kmeans", function(data, status){
+                $("#result").html(data);
+            });
+        });
+    });
+    </script>
+</body>
+</html>
