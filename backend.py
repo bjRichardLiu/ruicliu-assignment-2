@@ -60,7 +60,7 @@ def kmeans(data, centers, k=2, max_iter=100):
         plt.xlabel('X')
         plt.ylabel('Y')
         # Save the plot as a PNG file in the static folder, with a unique name
-        plt.savefig('kmeans.png')
+        plt.savefig('./kmeans.png')
         # plt.savefig('static/kmeans.png')
         
         # Check for convergence
@@ -162,20 +162,4 @@ def run_kmeans(k=2, strategy=Strategy.RANDOM):
     
     # Perform Kmeans clustering
     kmeans(data, centers, k)
-    
-run_kmeans(6)
-
-'''
-# Root URL 
-@app.get('/') 
-def home(): 
-    return render_template('index.html')
-
-@app.route('/run_kmeans')
-def run_kmeans_route():
-    run_kmeans()
-
-# Main function
-if __name__ == "__main__":
-    app.run(debug=True) 
-'''
+    return 1
