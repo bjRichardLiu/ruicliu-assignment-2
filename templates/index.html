@@ -1,21 +1,29 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Dynamic Page</title>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <title>K-Means Clustering</title>
 </head>
 <body>
-    <button id="run-kmeans">Run KMeans</button>
-    <div id="result"></div>
+    <form action="/run_kmeans" method="get">
+        <label for="k">Number of clusters:</label><br>
+        <input type="number" id="k" name="k" min="2"><br>
+        <label for="init">Initialization method:</label><br>
+        <select id="init" name="init">
+            <option value="0">Random</option>
+            <option value="1">K-Means</option>
+            <option value="2">K-Means++</option>
+            <option value="3">Manual</option>
+            <!-- Add more options as needed -->
+        </select><br>
+        <input type="submit" value="Run K-Means">
+    </form>
 
-    <script>
-    $(document).ready(function(){
-        $("#run-kmeans").click(function(){
-            $.get("/run_kmeans", function(data, status){
-                $("#result").html(data);
-            });
-        });
-    });
-    </script>
+    <button onclick="fetch('/step_through_kmeans')">Step Through</button>
+    <button onclick="fetch('/run_to_converg')">Run to Convergence</button>
+    <button onclick="fetch('/generate_data')">Generate New Dataset</button>
+    <button onclick="fetch('/reset')">Reset</button>
+
+    <!-- Add an img element to display the images -->
+    <img id="image" src="" alt="K-Means image">
 </body>
 </html>

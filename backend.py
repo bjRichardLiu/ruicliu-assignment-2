@@ -6,6 +6,7 @@ Backend for a web application, that allows users to visualize Kmeans clustering 
 import numpy as np
 import matplotlib.pyplot as plt
 from flask import Flask, render_template 
+import os
 
 # Flask constructor  
 app = Flask(__name__) 
@@ -26,9 +27,16 @@ def generate_data(n=50):
     n (int): Number of data points to generate.
     
     Returns:
-    np.array: n x 2 array of random data points.
+    Store the np.array to data.txt file
     '''
-    return np.random.rand(n, 2)
+    data = np.random.rand(n, 2)
+    np.savetxt('./static/data.txt', data)
+    # Plot the unclustered data using matplotlib
+    plt.scatter(data[:, 0], data[:, 1])
+    plt.title('KMeans Clustered Data')
+    # Save the plot as a PNG file in the static folder
+    plt.savefig('./static/data.png')
+    return data
 
 # Function to perform Kmeans clustering
 def kmeans(data, centers, k=2, max_iter=100):
@@ -45,7 +53,7 @@ def kmeans(data, centers, k=2, max_iter=100):
     '''
     
     # Perform Kmeans clustering
-    for i in range(max_iter):
+    for a in range(max_iter):
         # Assign each data point to the nearest cluster
         labels = np.argmin(np.linalg.norm(data[:, None] - centers, axis=2), axis=1)
         
@@ -60,13 +68,15 @@ def kmeans(data, centers, k=2, max_iter=100):
         plt.xlabel('X')
         plt.ylabel('Y')
         # Save the plot as a PNG file in the static folder, with a unique name
-        plt.savefig('./kmeans.png')
+        name = "kmeans_step_" + str(a) + ".png"
+        plt.savefig(os.path.join('static', name))
         # plt.savefig('static/kmeans.png')
         
         # Check for convergence
         if np.all(centers == new_centers):
             break
         centers = new_centers
+    return a
 
 # Function to determine random cluster centers
 def random_centers(data, k=2):
@@ -147,8 +157,10 @@ def run_kmeans(k=2, strategy=Strategy.RANDOM):
     '''
     Runs the Kmeans clustering algorithm on the data points.
     '''
-    # Generate random data
-    data = generate_data(200)
+    # Get data
+    if not os.path.exists('./static/data.txt'):
+        generate_data()
+    data = np.loadtxt('./static/data.txt')
     
     switcher = {
         Strategy.RANDOM: random_centers,
@@ -161,5 +173,13 @@ def run_kmeans(k=2, strategy=Strategy.RANDOM):
     centers = switcher.get(strategy)(data, k)
     
     # Perform Kmeans clustering
-    kmeans(data, centers, k)
-    return 1
+    iter = kmeans(data, centers, k)
+    return iter
+
+def main():
+    generate_data()
+    # Run the Kmeans clustering algorithm
+    run_kmeans(2, Strategy.RANDOM)
+
+if __name__ == '__main__':
+    main()
