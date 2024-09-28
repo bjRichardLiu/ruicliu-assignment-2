@@ -2,28 +2,32 @@
 <html>
 <head>
     <title>K-Means Clustering</title>
+    <script>
+        function updateImage(url) {
+            document.getElementById('image').src = url;
+        }
+    </script>
 </head>
 <body>
     <form action="/run_kmeans" method="get">
         <label for="k">Number of clusters:</label><br>
-        <input type="number" id="k" name="k" min="2"><br>
+        <input type="number" id="k" name="k" min="1"><br>
         <label for="init">Initialization method:</label><br>
         <select id="init" name="init">
             <option value="0">Random</option>
-            <option value="1">K-Means</option>
+            <option value="1">Farther First</option>
             <option value="2">K-Means++</option>
             <option value="3">Manual</option>
-            <!-- Add more options as needed -->
         </select><br>
         <input type="submit" value="Run K-Means">
     </form>
 
-    <button onclick="fetch('/step_through_kmeans')">Step Through</button>
-    <button onclick="fetch('/run_to_converg')">Run to Convergence</button>
+    <button onclick="fetch('/step_through_kmeans').then(response => response.text()).then(updateImage)">Step Through</button>
+    <button onclick="fetch('/run_to_converg').then(response => response.text()).then(updateImage)">Run to Convergence</button>
     <button onclick="fetch('/generate_data')">Generate New Dataset</button>
     <button onclick="fetch('/reset')">Reset</button>
 
     <!-- Add an img element to display the images -->
-    <img id="image" src="" alt="K-Means image">
+    <img id="image" src="./static/data.png" alt="K-Means image">
 </body>
 </html>

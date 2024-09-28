@@ -8,8 +8,6 @@ import matplotlib.pyplot as plt
 from flask import Flask, render_template 
 import os
 
-# Flask constructor  
-app = Flask(__name__) 
 
 # enum for different strategies to determine cluster centers
 class Strategy:
@@ -19,7 +17,7 @@ class Strategy:
     MANUAL_INPUT = 3
 
 # Function to generate random data
-def generate_data(n=50):
+def generate_data(n=200):
     '''
     Generates n random data points.
     
@@ -61,7 +59,6 @@ def kmeans(data, centers, k=2, max_iter=100):
         new_centers = np.array([data[labels == i].mean(axis=0) for i in range(k)])
         
         # Plot the data and cluster centers using matplotlib
-        plt.figure()
         plt.scatter(data[:, 0], data[:, 1], c=labels)
         plt.scatter(centers[:, 0], centers[:, 1], c='red', marker='x')
         plt.title('Kmeans Clustering')
@@ -143,7 +140,7 @@ def manual_input(data, k=2):
     Returns:
     np.array: n x 2 array of data points.
     '''
-    plt.figure()
+    # plt.figure()
     plt.scatter(data[:, 0], data[:, 1])
     plt.title('Click on the cluster centers')
     plt.xlabel('X')
@@ -153,7 +150,7 @@ def manual_input(data, k=2):
     return centers
 
 # Function to run the Kmeans clustering algorithm
-def run_kmeans(k=2, strategy=Strategy.RANDOM):
+def run_kmeans(k=2, strategy=0):
     '''
     Runs the Kmeans clustering algorithm on the data points.
     '''
@@ -162,13 +159,19 @@ def run_kmeans(k=2, strategy=Strategy.RANDOM):
         generate_data()
     data = np.loadtxt('./static/data.txt')
     
+    # Delete all previous images
+    images = os.listdir('./static')
+    for image in images:
+        if 'data' not in image:
+            os.remove(f'./static/{image}')
+    
     switcher = {
         Strategy.RANDOM: random_centers,
         Strategy.FARTHEST_FIRST: farthest_first,
         Strategy.KMEANS_PLUS_PLUS: kmeans_plus_plus,
         Strategy.MANUAL_INPUT: manual_input
     }
-    
+
     # Determine cluster centers based on the selected strategy
     centers = switcher.get(strategy)(data, k)
     
@@ -179,7 +182,7 @@ def run_kmeans(k=2, strategy=Strategy.RANDOM):
 def main():
     generate_data()
     # Run the Kmeans clustering algorithm
-    run_kmeans(2, Strategy.RANDOM)
+    run_kmeans(4, 0)
 
 if __name__ == '__main__':
     main()
