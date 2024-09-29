@@ -14,27 +14,82 @@ function runKmeans() {
     // Log the values for debugging
     console.log('Running K-Means with k =', kInt, 'and init =', initInt);
 
-    // Send a POST request to the '/run_kmeans' route with the form data
-    const formData = new FormData();
-    formData.append('k', kInt);
-    formData.append('init', initInt);
-
-    fetch('/run_kmeans', {
-        method: 'POST',
-        body: formData,
-    })
-    .then(response => {
-        response.blob();
-        location.reload();
-    })
-    .then(imageBlob => {
-        // Convert the image blob to a URL and display the image
-        const imageURL = URL.createObjectURL(imageBlob);
+    // If init = 3, let the user select center points manually
+    if (initInt === 3) {
         const kmeansImage = document.getElementById('kmeansImage');
-        kmeansImage.src = imageURL;
-        kmeansImage.style.display = 'block';
-    })
-    .catch(error => console.error('Error:', error));
+        const centers = [];
+        kmeansImage.addEventListener('click', function(event) {
+            // Calculate the coordinates of the click relative to the image
+            const rect = kmeansImage.getBoundingClientRect();
+            const x = (event.clientX - rect.left) / kmeansImage.width;
+            const y = (event.clientY - rect.top) / kmeansImage.height;
+
+            // Log the coordinates for debugging
+            console.log('User selected center point at', x, y);
+
+            // Add the coordinates to the centers array
+            centers.push([(1 - x), y]);
+
+            // Create a new div element
+            const dot = document.createElement('div');
+            // Add the dot class to the dot
+            dot.classList.add('dot');
+
+            // Position the dot
+            dot.style.left = (x * kmeansImage.width + rect.left - 5) + 'px';
+            dot.style.top = (y * kmeansImage.height + rect.top - 5) + 'px';
+
+            // Add the dot to the DOM
+            document.body.appendChild(dot);
+
+            // If the user has selected k centers, send them to the server and run K-Means
+            if (centers.length === kInt) {
+                const formData = new FormData();
+                formData.append('k', kInt);
+                formData.append('init', initInt);
+                formData.append('centers', JSON.stringify(centers));
+
+                fetch('/run_kmeans', {
+                    method: 'POST',
+                    body: formData,
+                })
+                .then(response => {
+                    response.blob();
+                    location.reload();
+                })
+                .then(imageBlob => {
+                    // Convert the image blob to a URL and display the image
+                    const imageURL = URL.createObjectURL(imageBlob);
+                    const kmeansImage = document.getElementById('kmeansImage');
+                    kmeansImage.src = imageURL;
+                    kmeansImage.style.display = 'block';
+                })
+                .catch(error => console.error('Error:', error));
+            }
+        });
+    } else {
+        // Send a POST request to the '/run_kmeans' route with the form data
+        const formData = new FormData();
+        formData.append('k', kInt);
+        formData.append('init', initInt);
+
+        fetch('/run_kmeans', {
+            method: 'POST',
+            body: formData,
+        })
+        .then(response => {
+            response.blob();
+            location.reload();
+        })
+        .then(imageBlob => {
+            // Convert the image blob to a URL and display the image
+            const imageURL = URL.createObjectURL(imageBlob);
+            const kmeansImage = document.getElementById('kmeansImage');
+            kmeansImage.src = imageURL;
+            kmeansImage.style.display = 'block';
+        })
+        .catch(error => console.error('Error:', error));
+    }
 }
 
 function generateData() {

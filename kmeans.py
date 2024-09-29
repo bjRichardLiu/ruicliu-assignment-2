@@ -124,8 +124,8 @@ class KMeans():
         return centers
 
     def initialize(self, strategy=0):
-        if strategy == 3:
-            return self.manual_input()
+        if strategy == 0:
+            return self.random_centers()
         elif strategy == 1:
             return self.farthest_first()
         elif strategy == 2:
@@ -170,8 +170,10 @@ class KMeans():
         # Euclidean distance
         return sum((x - y)**2) ** (1/2)
 
-    def lloyds(self, strategy):
-        centers = self.initialize(strategy)
+    def lloyds(self, strategy, centers=None):
+        if strategy != 3:
+            centers = self.initialize(strategy)
+        print(centers)
         self.make_clusters(centers)
         new_centers = self.compute_centers()
         self.snap(new_centers)

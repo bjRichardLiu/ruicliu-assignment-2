@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 from flask import Flask, render_template 
 import matplotlib 
 from kmeans import KMeans
+import json
 matplotlib.use('Agg') 
 
 app = Flask(__name__)
@@ -60,7 +61,12 @@ def run_kmeans_route():
     data = np.loadtxt('./static/data.txt')
     # Run the Kmeans algorithm
     kmeans = KMeans(data, k)
-    kmeans.lloyds(init)
+    if init == 3:
+        centers = json.loads(request.form.get('centers'))
+        centers = np.array(centers)
+        kmeans.lloyds(init, centers)
+    else:
+        kmeans.lloyds(init)
     images = kmeans.snaps
     # Store all the images in static folder
     for i, image in enumerate(images):

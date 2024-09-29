@@ -27,3 +27,11 @@ form {
     max-width: 400px;
     border: 1px solid #ccc;
 }
+
+.dot {
+    width: 10px;
+    height: 10px;
+    background-color: red;
+    position: absolute;
+    border-radius: 50%;
+}
