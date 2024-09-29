@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify, send_file, redirect
+from flask import Flask, render_template, request, jsonify, send_file, redirect, send_from_directory
 import os
 import json
 import numpy as np
@@ -23,31 +23,30 @@ def generate_data_route():
     KMeans.generate_data(200)
     return send_file('./static/data.png')
 
-@app.route('/step_through_kmeans')
-def step_through_kmeans_route():
-    # Step through the kmeans.gif
-    global counter
+@app.route('/get_frame')
+def get_frame():
+    frameIndex = request.args.get('frameIndex')
     global num_iterations
-    counter += 1
-    if counter > num_iterations:
-        counter = 0
-    # TODO
-    return render_template('index.html', image_url='kmeans.gif')
+    if int(frameIndex) >= num_iterations:
+        return send_file('./static/temp.png')
+    return send_from_directory(f'static/kmeans', f'frame{frameIndex}.png')
 
-@app.route('/run_to_converg')
-def run_to_converg_route():
-    # Returns the kmeans.gif
-    return render_template('index.html', image_url='kmeans.gif')
+@app.route('/should_continue')
+def should_continue():
+    frameIndex = request.args.get('frameIndex')
+    print(frameIndex)
+    print(num_iterations)
+    return {'continue': int(frameIndex) < num_iterations}
 
 @app.route('/reset')
 def reset_route():
     global counter
     counter = 0
-    images = os.listdir('./static')
+    images = os.listdir('./static/kmeans')
     # Remove all images except the data image
     for image in images:
         if 'data' not in image and 'js' not in image and 'css' not in image:
-            os.remove(f'./static/{image}')
+            os.remove(f'./static/kmeans/{image}')
     return redirect('/')
 
 @app.route('/run_kmeans', methods=['POST'])
@@ -63,18 +62,14 @@ def run_kmeans_route():
     kmeans = KMeans(data, k)
     kmeans.lloyds(init)
     images = kmeans.snaps
-    images[0].save(
-        './static/kmeans.gif',
-        optimize=False,
-        save_all=True,
-        append_images=images[1:],
-        loop=0,
-        duration=500
-    )
+    # Store all the images in static folder
+    for i, image in enumerate(images):
+        image.save(f'./static/kmeans/frame{i}.png')
     global counter
     global num_iterations
     counter = 0
     num_iterations = len(images)
+    print(num_iterations)
     # Return the starting image
     return send_file('./static/temp.png')
 

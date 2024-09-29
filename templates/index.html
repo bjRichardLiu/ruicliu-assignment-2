@@ -23,11 +23,14 @@
 
         <button type="button" onclick="runKmeans()">Run K-Means</button>
         <button type="button" onclick="generateData()">Generate New Data</button>
+        <button type="button" onclick="stepThroughKmeans()">Step Through</button>
+        <button type="button" onclick="runToConvergence()">Run to Convergence</button>
+        <button type="button" onclick="reset()">Reset</button>
     </form>
 
     <h2>K-Means Image</h2>
     <div id="imageContainer">
-        <img id="kmeansImage" alt="K-Means Image" style="display:none;">
+        <img id="kmeansImage" src="/static/temp.png" alt="K-Means Image">
     </div>
 
     <script src="/static/scripts.js"></script>
