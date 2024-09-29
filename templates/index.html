@@ -1,33 +1,35 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>K-Means Clustering</title>
-    <script>
-        function updateImage(url) {
-            document.getElementById('image').src = url;
-        }
-    </script>
+    <link rel="stylesheet" href="/static/styles.css">
 </head>
 <body>
-    <form action="/run_kmeans" method="get">
-        <label for="k">Number of clusters:</label><br>
-        <input type="number" id="k" name="k" min="1"><br>
-        <label for="init">Initialization method:</label><br>
-        <select id="init" name="init">
+    <h1>K-Means Clustering</h1>
+    
+    <form id="kmeansForm">
+        <label for="k">Number of clusters:</label>
+        <input type="number" id="k" name="k" min="1" value="2" required><br><br>
+
+        <label for="init">Initialization method:</label>
+        <select id="init" name="init" required>
             <option value="0">Random</option>
             <option value="1">Farther First</option>
             <option value="2">K-Means++</option>
             <option value="3">Manual</option>
-        </select><br>
-        <input type="submit" value="Run K-Means">
+        </select><br><br>
+
+        <button type="button" onclick="runKmeans()">Run K-Means</button>
+        <button type="button" onclick="generateData()">Generate New Data</button>
     </form>
 
-    <button onclick="fetch('/step_through_kmeans').then(response => response.text()).then(updateImage)">Step Through</button>
-    <button onclick="fetch('/run_to_converg').then(response => response.text()).then(updateImage)">Run to Convergence</button>
-    <button onclick="fetch('/generate_data')">Generate New Dataset</button>
-    <button onclick="fetch('/reset')">Reset</button>
+    <h2>K-Means Image</h2>
+    <div id="imageContainer">
+        <img id="kmeansImage" alt="K-Means Image" style="display:none;">
+    </div>
 
-    <!-- Add an img element to display the images -->
-    <img id="image" src="./static/data.png" alt="K-Means image">
+    <script src="/static/scripts.js"></script>
 </body>
 </html>

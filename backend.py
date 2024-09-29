@@ -7,6 +7,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from flask import Flask, render_template 
 import os
+import matplotlib 
+matplotlib.use('Agg') 
 
 
 # enum for different strategies to determine cluster centers
