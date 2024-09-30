@@ -28,7 +28,7 @@ function runKmeans() {
             console.log('User selected center point at', x, y);
 
             // Add the coordinates to the centers array
-            centers.push([(1 - x), (1 - y));
+            centers.push([(1 - x), (1 - y)]);
 
             // Create a new div element
             const dot = document.createElement('div');

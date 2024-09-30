@@ -1,5 +1,7 @@
 # ruicliu-assignment-2
- 
+
+## Link to Video
+[CS 506 hw2 KMeans Website](https://youtu.be/m6wfqqWK2dE)
 ## Running Instructions
 1. Clone this repository to your local machine.
 2. Use make install to install the required dependencies.
